@@ -3,14 +3,15 @@ const path = require("path"),
   { CleanWebpackPlugin } = require("clean-webpack-plugin"),
   CopyWebpackPlugin = require("copy-webpack-plugin"),
   MiniCssExtractPlugin = require("mini-css-extract-plugin"),
-  OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plugin'),
-  TerserWebpackPlugin = require('terser-webpack-plugin');
+  OptimizeCssAssetsWebpackPlugin = require("optimize-css-assets-webpack-plugin"),
+  TerserWebpackPlugin = require("terser-webpack-plugin");
 
-const isDev = process.env.NODE_ENV === 'development';
+const isDev = process.env.NODE_ENV === "development";
 
 const optimization = () => {
   const config = {
-    splitChunks: { // mv same libs imports to general place
+    splitChunks: {
+      // mv same libs imports to general place
       chunks: "all"
     }
   };
@@ -18,11 +19,15 @@ const optimization = () => {
   if (!isDev) {
     config.minimizer = [
       new OptimizeCssAssetsWebpackPlugin(), // minify css
-      new TerserWebpackPlugin(), // minify js
+      new TerserWebpackPlugin() // minify js
     ];
   }
 
   return config;
+};
+
+const filename = ext => {
+  return isDev ? `[name].[hash].${ext}` : `[name].${ext}`;
 };
 
 module.exports = {
@@ -32,7 +37,7 @@ module.exports = {
   // freeload server, saved all files data in memory
   devServer: {
     port: 4205,
-    hot: isDev, // hmr if mode is dev
+    hot: isDev // hmr if mode is dev
   },
 
   entry: {
@@ -43,7 +48,7 @@ module.exports = {
 
   output: {
     // where to compile
-    filename: "[name].[contenthash].js", //bundle name
+    filename: filename("js"), //bundle name
     path: path.resolve(__dirname, "dist") // where
   },
 
@@ -66,7 +71,7 @@ module.exports = {
       template: "./index.html",
       minify: {
         collapseWhitespace: !isDev
-      },
+      }
     }),
     new CleanWebpackPlugin(), // clean dist folder
     new CopyWebpackPlugin([
@@ -76,8 +81,9 @@ module.exports = {
         to: path.resolve(__dirname, "dist")
       }
     ]),
-    new MiniCssExtractPlugin({ // mv all css files to single file
-      filename: "[name].[contenthash].css"
+    new MiniCssExtractPlugin({
+      // mv all css files to single file
+      filename: filename("css")
     })
   ],
 
@@ -85,8 +91,8 @@ module.exports = {
     rules: [
       {
         // if test reg exp true -> use loader
-        test: /\.css$/, // reg exp
-        // loader works from right-to-left: style-loader <- css-loader <- webpack
+        test: /\.(s[ac]ss|css)$/i, // reg exp
+        // loader works from right-to-left: style-loader <- css-loader <- sass-loader <- webpack
         /*
          * style-loader - add styles to head of html
          * css-loader - provides import css to js components
@@ -97,10 +103,11 @@ module.exports = {
             loader: MiniCssExtractPlugin.loader,
             options: {
               hmr: isDev, // hot module replacement - refresh single entities without reloading all page
-              reloadAll: true,
+              reloadAll: true
             }
           },
-          "css-loader"
+          "css-loader",
+          "sass-loader"
         ]
       },
       {

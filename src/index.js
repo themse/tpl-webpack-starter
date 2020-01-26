@@ -2,6 +2,7 @@ import * as $ from 'jquery';
 
 import { Post } from '@models/Post';
 import './styles/stylesheet.css';
+import './styles/main.scss';
 import jsonObj from './assets/data';
 import img from './assets/ferrari-p80-c.jpg';
 import xmlData from './assets/note.xml';
