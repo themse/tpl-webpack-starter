@@ -30,6 +30,13 @@ const filename = ext => {
   return isDev ? `[name].[hash].${ext}` : `[name].${ext}`;
 };
 
+const babelOptions = (...presets) => {
+  return {
+    presets: ["@babel/preset-env", ...presets],
+    plugins: ["@babel/plugin-proposal-class-properties"]
+  };
+};
+
 module.exports = {
   // base url
   context: path.resolve(__dirname, "src"),
@@ -42,7 +49,7 @@ module.exports = {
 
   entry: {
     // divide files into separate bundles
-    main: ["@babel/polyfill", "./index.js"],
+    main: ["@babel/polyfill", "./index.jsx"],
     analytics: "./analytics.ts"
   },
 
@@ -54,7 +61,7 @@ module.exports = {
 
   resolve: {
     // what extensions are default?
-    extensions: [".js", ".json", ".ts"],
+    extensions: [".js", ".json", ".ts", ".jsx"],
     // alias path
     alias: {
       "@models": path.resolve(__dirname, "src/models"),
@@ -131,11 +138,7 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
-          options: {
-            //here you can add presets
-            presets: ["@babel/preset-env"],
-            plugins: ["@babel/plugin-proposal-class-properties"]
-          }
+          options: babelOptions()
         }
         // loader: 'babel-loader', // if you add single loader use key `loader`
       },
@@ -144,13 +147,17 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
-          options: {
-            presets: ["@babel/preset-env", "@babel/preset-typescript"],
-            plugins: ["@babel/plugin-proposal-class-properties"]
-          }
+          options: babelOptions("@babel/preset-typescript")
         }
-        // loader: 'babel-loader', // if you add single loader use key `loader`
-      }
+      },
+      {
+        test: /\.jsx$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: babelOptions("@babel/preset-react")
+        }
+      },
     ]
   }
 };
