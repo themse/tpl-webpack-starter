@@ -1,5 +1,7 @@
 import * as $ from 'jquery';
 
+import './babel';
+
 import { Post } from '@models/Post';
 import './styles/stylesheet.css';
 import './styles/main.scss';

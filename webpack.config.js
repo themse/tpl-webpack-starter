@@ -42,7 +42,7 @@ module.exports = {
 
   entry: {
     // divide files into separate bundles
-    main: "./index.js",
+    main: ["@babel/polyfill", "./index.js"],
     analytics: "./analytics.js"
   },
 
@@ -91,7 +91,7 @@ module.exports = {
     rules: [
       {
         // if test reg exp true -> use loader
-        test: /\.(s[ac]ss|css)$/i, // reg exp
+        test: /\.(s[ac]ss|css)$/, // reg exp
         // loader works from right-to-left: style-loader <- css-loader <- sass-loader <- webpack
         /*
          * style-loader - add styles to head of html
@@ -125,6 +125,19 @@ module.exports = {
       {
         test: /\.csv$/,
         use: ["csv-loader"]
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            //here you can add presets
+            presets: ["@babel/preset-env"],
+            plugins: ["@babel/plugin-proposal-class-properties"]
+          }
+        }
+        // loader: 'babel-loader', // if you add single loader use key `loader`
       }
     ]
   }
