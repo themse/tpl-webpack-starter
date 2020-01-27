@@ -37,6 +37,21 @@ const babelOptions = (...presets) => {
   };
 };
 
+const jsLoader = () => {
+  const loaders = [
+    {
+      loader: "babel-loader",
+      options: babelOptions()
+    }
+  ];
+
+  if (isDev) {
+    loaders.push("eslint-loader");
+  }
+
+  return loaders;
+};
+
 module.exports = {
   // base url
   context: path.resolve(__dirname, "src"),
@@ -46,6 +61,8 @@ module.exports = {
     port: 4205,
     hot: isDev // hmr if mode is dev
   },
+
+  devtool: isDev ? "source-map" : "",
 
   entry: {
     // divide files into separate bundles
@@ -136,10 +153,7 @@ module.exports = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: {
-          loader: "babel-loader",
-          options: babelOptions()
-        }
+        use: jsLoader()
         // loader: 'babel-loader', // if you add single loader use key `loader`
       },
       {
@@ -157,7 +171,7 @@ module.exports = {
           loader: "babel-loader",
           options: babelOptions("@babel/preset-react")
         }
-      },
+      }
     ]
   }
 };
