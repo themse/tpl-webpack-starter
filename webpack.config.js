@@ -43,7 +43,7 @@ module.exports = {
   entry: {
     // divide files into separate bundles
     main: ["@babel/polyfill", "./index.js"],
-    analytics: "./analytics.js"
+    analytics: "./analytics.ts"
   },
 
   output: {
@@ -54,7 +54,7 @@ module.exports = {
 
   resolve: {
     // what extensions are default?
-    extensions: [".js", ".json"],
+    extensions: [".js", ".json", ".ts"],
     // alias path
     alias: {
       "@models": path.resolve(__dirname, "src/models"),
@@ -134,6 +134,18 @@ module.exports = {
           options: {
             //here you can add presets
             presets: ["@babel/preset-env"],
+            plugins: ["@babel/plugin-proposal-class-properties"]
+          }
+        }
+        // loader: 'babel-loader', // if you add single loader use key `loader`
+      },
+      {
+        test: /\.ts$/,
+        exclude: /node_modules/,
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-env", "@babel/preset-typescript"],
             plugins: ["@babel/plugin-proposal-class-properties"]
           }
         }
