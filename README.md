@@ -1,1 +1,1 @@
-**Webpack EDU starter**
+**Webpack starter**
